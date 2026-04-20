@@ -25,6 +25,7 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           use_foundry: "true"
+          show_full_output: "true"
           prompt: |
             Fais une code review de cette PR. Concentre-toi sur :
             - Bugs potentiels et régressions
@@ -38,9 +39,9 @@ jobs:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_DEFAULT_OPUS_MODEL: "opus-4-7-gs"
-          ANTHROPIC_DEFAULT_SONNET_MODEL: "opus-4-7-gs"
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: "opus-4-7-gs"
+          ANTHROPIC_DEFAULT_OPUS_MODEL: "claude-opus-4-7"
+          ANTHROPIC_DEFAULT_SONNET_MODEL: "claude-opus-4-7"
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: "claude-opus-4-7"
 
   # @claude interactif dans les commentaires de PR/issues
   claude-mention:
@@ -61,12 +62,13 @@ jobs:
       - uses: anthropics/claude-code-action@v1
         with:
           use_foundry: "true"
+          show_full_output: "true"
           claude_args: |
             --model opus
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_DEFAULT_OPUS_MODEL: "opus-4-7-gs"
-          ANTHROPIC_DEFAULT_SONNET_MODEL: "opus-4-7-gs"
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: "opus-4-7-gs"
+          ANTHROPIC_DEFAULT_OPUS_MODEL: "claude-opus-4-7"
+          ANTHROPIC_DEFAULT_SONNET_MODEL: "claude-opus-4-7"
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: "claude-opus-4-7"
