@@ -16,13 +16,12 @@ jobs:
     permissions:
       contents: read
       pull-requests: write
-      id-token: write   # requis pour OIDC
+      id-token: write
     steps:
       - uses: actions/checkout@v4
         with:
           fetch-depth: 0
 
-      # --- Option A : API key (à commenter si tu passes en OIDC) ---
       - uses: anthropics/claude-code-action@v1
         with:
           use_foundry: "true"
@@ -34,14 +33,16 @@ jobs:
             - Tests manquants sur les changements
             Poste un commentaire de review structuré sur la PR. Sois factuel, pas de blabla.
           claude_args: |
-            --model opus-4-7-gs
+            --model opus
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_DEFAULT_OPUS_MODEL: "claude-opus-4-7"
+          ANTHROPIC_DEFAULT_OPUS_MODEL: "opus-4-7-gs"
+          ANTHROPIC_DEFAULT_SONNET_MODEL: "opus-4-7-gs"
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: "opus-4-7-gs"
 
-  # @claude interactif dans PR/issues
+  # @claude interactif dans les commentaires de PR/issues
   claude-mention:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
@@ -61,9 +62,11 @@ jobs:
         with:
           use_foundry: "true"
           claude_args: |
-            --model opus-4-7-gs
+            --model opus
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_DEFAULT_OPUS_MODEL: "claude-opus-4-7"
+          ANTHROPIC_DEFAULT_OPUS_MODEL: "opus-4-7-gs"
+          ANTHROPIC_DEFAULT_SONNET_MODEL: "opus-4-7-gs"
+          ANTHROPIC_DEFAULT_HAIKU_MODEL: "opus-4-7-gs"
