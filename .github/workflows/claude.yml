@@ -33,11 +33,13 @@ jobs:
             - Tests manquants sur les changements
             Poste un commentaire de review structuré sur la PR. Sois factuel, pas de blabla.
           claude_args: |
-            --model claude-opus-4-6
+            --model claude-opus-4-6 --debug
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
+          ANTHROPIC_LOG: "debug"
+          DEBUG: "1"
 
   claude-mention:
     if: |
@@ -59,8 +61,10 @@ jobs:
           use_foundry: "true"
           show_full_output: "true"
           claude_args: |
-            --model claude-opus-4-6
+            --model claude-opus-4-6 --debug
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
+          ANTHROPIC_LOG: "debug"
+          DEBUG: "1"
