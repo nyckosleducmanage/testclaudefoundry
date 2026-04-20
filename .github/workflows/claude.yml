@@ -26,15 +26,26 @@ jobs:
           use_foundry: "true"
           show_full_output: "true"
           prompt: |
-            Fais une code review de cette PR. Concentre-toi sur :
-            - Bugs potentiels et régressions
-            - Sécurité (secrets, injections, permissions)
-            - Qualité (lisibilité, duplication, nommage)
-            - Tests manquants sur les changements
-            Poste un commentaire de review structuré sur la PR. Sois factuel, pas de blabla.
+            Tu dois faire la code review de la PR #${{ github.event.pull_request.number }} sur le repo ${{ github.repository }}.
+            Branche source : ${{ github.event.pull_request.head.ref }}
+            Branche cible : ${{ github.event.pull_request.base.ref }}
+
+            Étapes :
+            1. Récupère le diff avec : gh pr diff ${{ github.event.pull_request.number }}
+            2. Analyse les changements selon 4 axes : bugs/régressions, sécurité (secrets, injections, permissions), qualité (lisibilité, duplication, nommage), tests manquants
+            3. Poste UN SEUL commentaire de synthèse sur la PR avec : gh pr comment ${{ github.event.pull_request.number }} --body "ton commentaire markdown"
+
+            Format du commentaire :
+            - Commence par un résumé d'une ligne
+            - Puis des sections ## Bugs, ## Sécurité, ## Qualité, ## Tests
+            - Sous chaque section, liste en bullets les points trouvés, ou écris "RAS" si rien à signaler
+            - Sois factuel et concis. Pas de blabla introductif ni de conclusion.
+            - Ne signale pas la même chose deux fois.
+
+            N'utilise pas d'autres outils que ceux nécessaires à cette tâche. Ne fouille pas l'environnement.
           claude_args: |
             --model claude-opus-4-7
-            --allowedTools "Read,Glob,Grep,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*)"
+            --allowedTools "Read,Glob,Grep,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status),Bash(cat:*),Bash(ls:*),Bash(pwd)"
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
@@ -62,7 +73,7 @@ jobs:
           show_full_output: "true"
           claude_args: |
             --model claude-opus-4-7
-            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*)"
+            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Bash(gh pr checkout:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(cat:*),Bash(ls:*),Bash(pwd)"
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
