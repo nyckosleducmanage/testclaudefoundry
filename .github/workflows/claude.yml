@@ -26,9 +26,7 @@ jobs:
           URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
         run: |
           echo "URL length: ${#URL}"
-          echo "URL first 8 chars: ${URL:0:8}"
           echo "URL last 4 chars: ${URL: -4}"
-          echo "URL ends with slash: $(echo -n "$URL" | tail -c1)"
 
       - uses: anthropics/claude-code-action@v1
         with:
@@ -42,12 +40,13 @@ jobs:
             - Tests manquants sur les changements
             Poste un commentaire de review structuré sur la PR. Sois factuel, pas de blabla.
           claude_args: |
-            --model claude-opus-4-6 --debug
+            --model claude-opus-4-6
+            --allowedTools "Read,Glob,Grep,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*)"
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_LOG: "debug"
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
 
   claude-mention:
     if: |
@@ -69,9 +68,10 @@ jobs:
           use_foundry: "true"
           show_full_output: "true"
           claude_args: |
-            --model claude-opus-4-6 --debug
+            --model claude-opus-4-6
+            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(gh pr view:*),Bash(gh pr diff:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status:*),Bash(git add:*),Bash(git commit:*),Bash(git push:*)"
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_LOG: "debug"
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
