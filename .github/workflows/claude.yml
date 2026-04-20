@@ -9,7 +9,6 @@ on:
     types: [created]
 
 jobs:
-  # Auto-review de chaque PR
   pr-review:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
@@ -34,16 +33,12 @@ jobs:
             - Tests manquants sur les changements
             Poste un commentaire de review structuré sur la PR. Sois factuel, pas de blabla.
           claude_args: |
-            --model opus
+            --model claude-opus-4-6
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_DEFAULT_OPUS_MODEL: "opus-4-6-gs"
-          ANTHROPIC_DEFAULT_SONNET_MODEL: "opus-4-6-gs"
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: "opus-4-6-gs"
 
-  # @claude interactif dans les commentaires de PR/issues
   claude-mention:
     if: |
       (github.event_name == 'issue_comment' && contains(github.event.comment.body, '@claude')) ||
@@ -64,11 +59,8 @@ jobs:
           use_foundry: "true"
           show_full_output: "true"
           claude_args: |
-            --model opus
+            --model claude-opus-4-6
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
-          ANTHROPIC_DEFAULT_OPUS_MODEL: "opus-4-6-gs"
-          ANTHROPIC_DEFAULT_SONNET_MODEL: "opus-4-6-gs"
-          ANTHROPIC_DEFAULT_HAIKU_MODEL: "opus-4-6-gs"
