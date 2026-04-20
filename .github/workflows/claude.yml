@@ -21,6 +21,15 @@ jobs:
         with:
           fetch-depth: 0
 
+      - name: Debug base URL
+        env:
+          URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
+        run: |
+          echo "URL length: ${#URL}"
+          echo "URL first 8 chars: ${URL:0:8}"
+          echo "URL last 4 chars: ${URL: -4}"
+          echo "URL ends with slash: $(echo -n "$URL" | tail -c1)"
+
       - uses: anthropics/claude-code-action@v1
         with:
           use_foundry: "true"
@@ -39,7 +48,6 @@ jobs:
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
           ANTHROPIC_LOG: "debug"
-          DEBUG: "1"
 
   claude-mention:
     if: |
@@ -67,4 +75,3 @@ jobs:
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
           ANTHROPIC_FOUNDRY_API_KEY: ${{ secrets.ANTHROPIC_FOUNDRY_API_KEY }}
           ANTHROPIC_LOG: "debug"
-          DEBUG: "1"
