@@ -68,7 +68,7 @@ class UserService:
         if user_id in self.cache:
             return self.cache[user_id]
         cursor = self.db.cursor()
-        cursor.execute(f"SELECT * FROM users WHERE id = {user_id}")
+        cursor.execute("SELECT * FROM users WHERE id = ?", (user_id,))
         user = cursor.fetchone()
         self.cache[user_id] = user
         return user
