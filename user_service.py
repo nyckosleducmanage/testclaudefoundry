@@ -1,6 +1,6 @@
+import json
 import os
 import sqlite3
-import pickle
 import subprocess
 
 import bcrypt
@@ -43,8 +43,9 @@ class UserService:
         return bcrypt.checkpw(password.encode(), stored_hash)
 
     def load_session(self, session_data):
-        # Unsafe deserialization - RCE risk
-        return pickle.loads(session_data)
+        if isinstance(session_data, (bytes, bytearray)):
+            session_data = session_data.decode("utf-8")
+        return json.loads(session_data)
 
     def export_user_data(self, user_id, output_path):
         # Command injection
