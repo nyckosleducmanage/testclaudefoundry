@@ -1,8 +1,9 @@
 import os
-import hashlib
 import sqlite3
 import pickle
 import subprocess
+
+import bcrypt
 
 
 def _require_env(name):
@@ -29,13 +30,17 @@ class UserService:
         return cursor.fetchone()
 
     def authenticate(self, username, password):
-        # Weak hashing + SQL injection
-        hashed = hashlib.md5(password.encode()).hexdigest()
         cursor = self.db.cursor()
         cursor.execute(
-            "SELECT * FROM users WHERE username = '" + username + "' AND password = '" + hashed + "'"
+            "SELECT password FROM users WHERE username = ?", (username,)
         )
-        return cursor.fetchone() is not None
+        row = cursor.fetchone()
+        if row is None:
+            return False
+        stored_hash = row[0]
+        if isinstance(stored_hash, str):
+            stored_hash = stored_hash.encode()
+        return bcrypt.checkpw(password.encode(), stored_hash)
 
     def load_session(self, session_data):
         # Unsafe deserialization - RCE risk
