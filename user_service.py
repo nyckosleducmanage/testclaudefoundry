@@ -4,10 +4,17 @@ import sqlite3
 import pickle
 import subprocess
 
-# Hardcoded credentials - should trigger security finding
-DATABASE_URL = "postgres://admin:SuperSecret123@prod-db.internal:5432/users"
-JWT_SECRET = "my-super-secret-jwt-key-do-not-share"
-ADMIN_API_TOKEN = "sk-live-a8f7d9c2e1b4f6d8a0c3e5b7"
+
+def _require_env(name):
+    value = os.environ.get(name)
+    if not value:
+        raise RuntimeError(f"missing required environment variable: {name}")
+    return value
+
+
+DATABASE_URL = _require_env("DATABASE_URL")
+JWT_SECRET = _require_env("JWT_SECRET")
+ADMIN_API_TOKEN = _require_env("ADMIN_API_TOKEN")
 
 
 class UserService:
