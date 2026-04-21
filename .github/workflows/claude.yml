@@ -17,35 +17,34 @@ jobs:
       pull-requests: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - uses: anthropics/claude-code-action@v1
         with:
           use_foundry: "true"
-          show_full_output: "true"
+          track_progress: true
           prompt: |
-            Tu dois faire la code review de la PR #${{ github.event.pull_request.number }} sur le repo ${{ github.repository }}.
-            Branche source : ${{ github.event.pull_request.head.ref }}
-            Branche cible : ${{ github.event.pull_request.base.ref }}
+            REPO: ${{ github.repository }}
+            PR NUMBER: ${{ github.event.pull_request.number }}
 
-            Étapes :
-            1. Récupère le diff avec : gh pr diff ${{ github.event.pull_request.number }}
-            2. Analyse les changements selon 4 axes : bugs/régressions, sécurité (secrets, injections, permissions), qualité (lisibilité, duplication, nommage), tests manquants
-            3. Poste UN SEUL commentaire de synthèse sur la PR avec : gh pr comment ${{ github.event.pull_request.number }} --body "ton commentaire markdown"
+            Fais une code review de cette PR selon 4 axes :
+            - Bugs et régressions
+            - Sécurité (secrets, injections, permissions, dépendances)
+            - Qualité (lisibilité, duplication, nommage, conventions)
+            - Tests manquants
 
-            Format du commentaire :
-            - Commence par un résumé d'une ligne
-            - Puis des sections ## Bugs, ## Sécurité, ## Qualité, ## Tests
-            - Sous chaque section, liste en bullets les points trouvés, ou écris "RAS" si rien à signaler
-            - Sois factuel et concis. Pas de blabla introductif ni de conclusion.
-            - Ne signale pas la même chose deux fois.
+            La branche PR est déjà checkée out dans le répertoire courant.
+            Utilise `gh pr diff` pour voir les changements.
+            Utilise `mcp__github_inline_comment__create_inline_comment` (avec `confirmed: true`) pour les problèmes attachés à des lignes spécifiques.
+            Utilise `gh pr comment` uniquement pour un résumé global de la review.
 
-            N'utilise pas d'autres outils que ceux nécessaires à cette tâche. Ne fouille pas l'environnement.
+            Ne poste pas le texte de review comme message — uniquement via les outils GitHub.
           claude_args: |
             --model claude-opus-4-7
-            --allowedTools "Read,Glob,Grep,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status),Bash(cat:*),Bash(ls:*),Bash(pwd)"
+            --max-turns 20
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Glob,Grep,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*)"
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
@@ -63,17 +62,18 @@ jobs:
       issues: write
       id-token: write
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
-          fetch-depth: 0
+          fetch-depth: 1
 
       - uses: anthropics/claude-code-action@v1
         with:
           use_foundry: "true"
-          show_full_output: "true"
+          track_progress: true
           claude_args: |
             --model claude-opus-4-7
-            --allowedTools "Read,Glob,Grep,Edit,Write,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Bash(gh pr checkout:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status),Bash(git add:*),Bash(git commit:*),Bash(git push:*),Bash(cat:*),Bash(ls:*),Bash(pwd)"
+            --max-turns 30
+            --allowedTools "mcp__github_inline_comment__create_inline_comment,Read,Glob,Grep,Edit,Write,Bash(gh pr diff:*),Bash(gh pr view:*),Bash(gh pr comment:*),Bash(gh issue view:*),Bash(gh issue comment:*),Bash(git log:*),Bash(git diff:*),Bash(git show:*),Bash(git status),Bash(git add:*),Bash(git commit:*),Bash(git push:*)"
         env:
           CLAUDE_CODE_USE_FOUNDRY: "1"
           ANTHROPIC_FOUNDRY_BASE_URL: ${{ secrets.AZURE_FOUNDRY_BASE_URL }}
