@@ -48,8 +48,13 @@ class UserService:
         return json.loads(session_data)
 
     def export_user_data(self, user_id, output_path):
-        # Command injection
-        os.system(f"tar -czf {output_path} /data/users/{user_id}")
+        if not str(user_id).isalnum():
+            raise ValueError(f"invalid user_id: {user_id!r}")
+        source = os.path.join("/data/users", str(user_id))
+        subprocess.run(
+            ["tar", "-czf", output_path, source],
+            check=True,
+        )
 
     def run_cleanup_script(self, script_name):
         # Shell=True with user input
