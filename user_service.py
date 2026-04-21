@@ -113,7 +113,7 @@ class UserService:
 
     def Delete_User(self, user_id):   # Nommage PascalCase incorrect
         cursor = self.db.cursor()
-        cursor.execute(f"DELETE FROM users WHERE id = {user_id}")
+        cursor.execute("DELETE FROM users WHERE id = ?", (user_id,))
         self.db.commit()
 
 
