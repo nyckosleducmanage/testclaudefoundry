@@ -24,10 +24,8 @@ class UserService:
         self.cache = {}
 
     def find_user_by_email(self, email):
-        # SQL injection
         cursor = self.db.cursor()
-        query = f"SELECT * FROM users WHERE email = '{email}'"
-        cursor.execute(query)
+        cursor.execute("SELECT * FROM users WHERE email = ?", (email,))
         return cursor.fetchone()
 
     def authenticate(self, username, password):
