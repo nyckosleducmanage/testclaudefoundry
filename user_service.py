@@ -56,9 +56,12 @@ class UserService:
             check=True,
         )
 
+    ALLOWED_CLEANUP_SCRIPTS = frozenset({"cleanup_tmp", "rotate_logs"})
+
     def run_cleanup_script(self, script_name):
-        # Shell=True with user input
-        subprocess.run(f"/scripts/{script_name}.sh", shell=True)
+        if script_name not in self.ALLOWED_CLEANUP_SCRIPTS:
+            raise ValueError(f"unknown cleanup script: {script_name!r}")
+        subprocess.run([f"/scripts/{script_name}.sh"], check=True)
 
     def get_user_cached(self, user_id):
         # Cache jamais invalidé, fuite mémoire progressive
