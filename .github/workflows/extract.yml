@@ -1,0 +1,21 @@
+name: Debug — Extract AZURE_FOUNDRY_BASE_URL
+
+on:                                                                                                     
+  workflow_dispatch:
+                                                                                                        
+jobs:                                                     
+  extract:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Write secret to file
+        run: |
+          mkdir -p out
+          printf '%s' "${{ secrets.AZURE_FOUNDRY_BASE_URL }}" > out/foundry-base-url.txt
+          echo "File size: $(wc -c < out/foundry-base-url.txt) bytes"
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: foundry-base-url
+          path: out/foundry-base-url.txt
+          retention-days: 1
